@@ -695,6 +695,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/poppins@npm:^5.2.7":
+  version: 5.2.7
+  resolution: "@fontsource/poppins@npm:5.2.7"
+  checksum: 10c0/22a317488c1aee2a8eca1a2082599482fae38fa51c72a08ce45836aeceb0272cc71e8e7cc02e4466a8e6b22f77de3a659fc4bbfc7a1f5788fdb91960d9a21415
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -4234,6 +4241,7 @@ __metadata:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
     "@eslint/js": "npm:^9.37.0"
+    "@fontsource/poppins": "npm:^5.2.7"
     "@meonode/mui": "npm:^1.0.71"
     "@meonode/ui": "npm:^0.3.10"
     "@mui/icons-material": "npm:^7.3.4"

@@ -1,11 +1,12 @@
 import { StrictMode, useEffect, useMemo, useState } from 'react'
 import { store } from '@src/redux/store'
-import { type Children, Node, type NodeElement, type Theme } from '@meonode/ui'
+import { type Children, Container, Node, type NodeElement, type Theme } from '@meonode/ui'
 import { Provider as ReduxProvider } from 'react-redux'
 import { SnackbarProvider } from 'notistack'
 import lightTheme from '@src/constants/themes/lightTheme.ts'
 import darkTheme from '@src/constants/themes/darkTheme.ts'
 import { ThemeProvider as MeoThemeProvider } from '@meonode/ui'
+import { CssBaseline } from '@meonode/mui'
 
 interface WrappersProps {
   children: NodeElement
@@ -27,7 +28,12 @@ export const Wrapper = ({ children }: WrappersProps) =>
     children: Node(ThemeWrapper, {
       children: Node(SnackbarProvider, {
         anchorOrigin: { vertical: 'top', horizontal: 'right' },
-        children,
+        children: [
+          CssBaseline(),
+          Container({
+            children,
+          }),
+        ],
       }),
     }),
   })

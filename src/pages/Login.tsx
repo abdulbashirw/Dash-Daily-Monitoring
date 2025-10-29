@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form'
 import { enqueueSnackbar } from 'notistack'
 import { setToken } from '@src/redux/slice/auth.slice.ts'
 import { useAppDispatch } from '@src/redux/store.ts'
+import tinycolor from 'tinycolor2'
 
 // Main Login Page component
 const LoginPage = () => {
@@ -49,7 +50,7 @@ const LoginPage = () => {
       // Background Section
       Section({
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, theme.base 0%, theme.secondary 100%)',
+        background: 'linear-gradient(135deg, theme.primary.muted 0%, theme.primary 100%)',
         color: 'white',
         position: 'relative',
         overflow: 'hidden',
@@ -62,7 +63,7 @@ const LoginPage = () => {
             children: Column({
               width: '100%',
               maxWidth: 400,
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              backgroundColor: theme => tinycolor(theme.system.base.default).setAlpha(0.6).toString(),
               backdropFilter: 'blur(10px)',
               borderRadius: 'theme.radius.xl',
               padding: 'theme.spacing.xl',
@@ -98,6 +99,9 @@ const LoginPage = () => {
                 // Form Fields
                 Form({
                   onSubmit,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 'theme.spacing.lg',
                   children: [
                     Column({
                       gap: 'theme.spacing.md',
@@ -109,7 +113,7 @@ const LoginPage = () => {
                           border: 'none',
                           outline: 'none',
                           fontSize: 'theme.text.md',
-                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          backgroundColor: 'rgba(0,0,0,0.1)',
                           color: 'theme.base.content',
                           css: {
                             '&::placeholder': { color: 'theme.base.content' },
@@ -124,7 +128,7 @@ const LoginPage = () => {
                           border: 'none',
                           outline: 'none',
                           fontSize: 'theme.text.md',
-                          backgroundColor: 'rgba(255,255,255,0.2)',
+                          backgroundColor: 'rgba(0,0,0,0.1)',
                           css: {
                             '&::placeholder': { color: 'theme.base.content' },
                           },
@@ -136,13 +140,14 @@ const LoginPage = () => {
                     // Login Button
                     Button({
                       children: 'Login',
+                      fullWidth: true,
                       marginTop: 'theme.spacing.sm',
-                      padding: 'theme.spacing.sm',
+                      padding: 'theme.spacing.sm theme.spacing.md',
                       borderRadius: '50px',
                       fontWeight: 'bold',
                       fontSize: 'large',
                       color: 'theme.primary.content',
-                      background: 'linear-gradient(135deg, theme.primary 0%, theme.secondary 100%)',
+                      background: 'linear-gradient(135deg, theme.primary 0%, theme.primary.hover 100%)',
                       border: 'none',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
@@ -158,7 +163,7 @@ const LoginPage = () => {
                 }),
 
                 // Optional: link to register or forgot password
-                Text(['Forgot password'], {
+                Text('Forgot password', {
                   fontSize: 'theme.text.sm',
                   fontWeight: 'bold',
                   marginTop: 'theme.spacing.md',

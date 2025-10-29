@@ -8,7 +8,7 @@ const dailyMonitoringServiceApi = createApi({
   tagTypes: [],
   endpoints: build => ({
     getDailyMonitoring: build.query<
-      { data: DailyMonitoringData },
+      { data: DailyMonitoringData[] },
       { /*token: string;*/ payload: DailyMonitoringPayload }
     >({
       query: ({ /*token,*/ payload }) => ({

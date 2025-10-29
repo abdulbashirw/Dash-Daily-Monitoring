@@ -91,6 +91,15 @@ export const buttonTextSX = {
       height: `24px!important`,
     },
   },
+  baseContent: {
+    color: 'theme.base.content',
+    fontWeight: 'bold',
+    '& .MuiCircularProgress-root': {
+      color: 'theme.primary',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
+  },
   primary: {
     color: 'theme.primary',
     fontWeight: 'bold',

@@ -30,8 +30,8 @@ const lightTheme = {
     },
     base: {
       default: '#ffffff',
-      medium: '#f9f9f9',
-      deep: '#f1f3f4',
+      medium: '#dedede',
+      deep: '#e5e5e5',
       content: '#202124',
       muted: '#5f6368',
       hover: '#f5f5f5',

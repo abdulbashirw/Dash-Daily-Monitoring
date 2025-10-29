@@ -1,4 +1,4 @@
-import { Button, IconButton, Tooltip, Typography } from '@meonode/mui'
+import { Button, IconButton, Tooltip, Typography, Modal } from '@meonode/mui'
 import {
   Center,
   Column,
@@ -38,7 +38,7 @@ import dayjs from 'dayjs'
 import type { OverridableComponent } from '@mui/types'
 import type { SvgIconTypeMap } from '@mui/material'
 import LogoImage from '@src/assets/image/LOGO.png'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useGetDailyMonitoringQuery } from '@src/redux/service/daily-monitoring.service.ts'
 import useGetToken from '@src/redux/hook/useGetToken.ts'
 import { useNavigate } from 'react-router'
@@ -72,286 +72,49 @@ export default function App() {
   const [isMainTableFullscreen, setIsMainTableFullscreen] = useState(false)
 
   const payor = parseJwt(token)
-  console.log(payor)
+  const startDate = dayjs().subtract(1, 'w').format('YYYY-MM-DD')
+  const endDate = dayjs().format('YYYY-MM-DD')
 
-  const { data: _data } = useGetDailyMonitoringQuery(
+  const { data: { data } = { data: undefined }, refetch } = useGetDailyMonitoringQuery(
     {
       payload: {
-        payor_code: 'ADMEDKA',
-        start_date: dayjs().format('YYYY-MM-DD'),
-        end_date: dayjs().add(1, 'w').format('YYYY-MM-DD'),
+        payor_code: payor.payor_code,
+        start_date: startDate,
+        end_date: endDate,
       },
     },
     { skip: !token },
   )
 
-  const data = {
-    code: 200,
-    status: 'Success',
-    message: 'Berhasil mendapatkan data',
-    data: [
-      {
-        header: {
-          PayorID: 'ALLIANZ',
-          CorporateID: 'HSCPX_IND',
-          PolicyNo: 'POLIC1234',
-          ClaimID: '28638299',
-          MemberID: '9090904-1',
-          MemberName: 'DUMMY AGENT 4 D',
-          CardNo: '8001001000019087',
-          NIK: '',
-          PD: 'D',
-          ClaimType: 'M',
-          ClaimStatus: '08',
-          ProviderID: '0101',
-          ProviderName: 'SILOAM HOSPITALS KEBON JERUK',
-          AdmissionDate: '2024-12-05',
-          DischargeDate: '',
-          Days: '0',
-          ICDX: '',
-          ICDXDesc: '',
-          CoverageID: 'H&S',
-          PlanID: 'HS-1203',
-          DisabilityNo: '',
-          AmtInccured: '0',
-          AmtApproved: '0',
-          AmtNotApproved: '0',
-          AmtAsoApproved: '0',
-          Remarks: 'DUMMY-',
-        },
-        detail: null,
-      },
-      {
-        header: {
-          PayorID: 'ALLIANZ',
-          CorporateID: 'HSRP_IND',
-          PolicyNo: 'O602',
-          ClaimID: '28638323',
-          MemberID: '000059950177',
-          MemberName: 'IRENE SOTERIANI UREN',
-          CardNo: '8000210106923871',
-          NIK: '',
-          PD: 'P',
-          ClaimType: 'M',
-          ClaimStatus: '40',
-          ProviderID: '1066',
-          ProviderName: 'MRCCC-SILOAM HOSPITALS SEMANGGI SPECIALIST C',
-          AdmissionDate: '2024-12-07',
-          DischargeDate: '2024-12-07',
-          Days: '1',
-          ICDX: 'A01',
-          ICDXDesc: 'TYPHOID AND PARATYPHOID FEVERS',
-          CoverageID: 'H&S',
-          PlanID: 'D1',
-          DisabilityNo: '',
-          AmtInccured: '11000',
-          AmtApproved: '11000',
-          AmtNotApproved: '0',
-          AmtAsoApproved: '0',
-          Remarks: 'TEST DATA.',
-        },
-        detail: null,
-      },
-      {
-        header: {
-          PayorID: 'ALLIANZ',
-          CorporateID: 'HSCPX_IND',
-          PolicyNo: 'POLIC1234',
-          ClaimID: '28638272',
-          MemberID: '9090903',
-          MemberName: 'DUMMY AGENT 3',
-          CardNo: '8000210106923723',
-          NIK: '',
-          PD: 'D',
-          ClaimType: 'M',
-          ClaimStatus: '21',
-          ProviderID: '0101',
-          ProviderName: 'SILOAM HOSPITALS KEBON JERUK',
-          AdmissionDate: '2024-12-04',
-          DischargeDate: '2024-12-04',
-          Days: '1',
-          ICDX: 'A01',
-          ICDXDesc: 'TYPHOID AND PARATYPHOID FEVERS',
-          CoverageID: 'H&S',
-          PlanID: 'HS-1203',
-          DisabilityNo: '',
-          AmtInccured: '0',
-          AmtApproved: '0',
-          AmtNotApproved: '0',
-          AmtAsoApproved: '0',
-          Remarks: 'DUMMY 1',
-        },
-        detail: null,
-      },
-      {
-        header: {
-          PayorID: 'ALLIANZ',
-          CorporateID: 'HCP_WOORI',
-          PolicyNo: 'Q462',
-          ClaimID: '28638310',
-          MemberID: '077000001184',
-          MemberName: 'CAROLUS BOROMEUS SUGIHARTO',
-          CardNo: '8000210106923822',
-          NIK: '',
-          PD: 'P',
-          ClaimType: 'M',
-          ClaimStatus: '40',
-          ProviderID: '0600',
-          ProviderName: 'RS. ST. CAROLUS',
-          AdmissionDate: '2024-12-06',
-          DischargeDate: '2024-12-09',
-          Days: '3',
-          ICDX: 'F41',
-          ICDXDesc: 'Other anxiety disorders',
-          CoverageID: 'H&S',
-          PlanID: 'PLAN A-IDR',
-          DisabilityNo: '28638310',
-          AmtInccured: '35000000',
-          AmtApproved: '3000000',
-          AmtNotApproved: '32000000',
-          AmtAsoApproved: '0',
-          Remarks:
-            'Total biaya diajukan : Rp35.000.000 Total biaya yang disetujui: Rp.3.000.000 Total biaya yang tidak disetujui: Rp.32.000.000 (terdiri overlimit biaya) menjadi tanggungan peserta yang harus diselesaikan di RS.\r\nPenjaminan biaya rawat inap untuk diagnosa Schizophreni dapat diberikan,Informasi biaya rawat inap ini bersifat sementara, dan dapat berubah sesuai tagihan akhir dari RS.Khusus Peserta COB BPJS, wajib melampirkan surat rujukan faskes pertama dan Surat Eligibilitas Peserta (SEP),NOTE: Sebagai syarat pembayaran tagihan klaim agar dilengkapi kelengkapan dokumen saat pengiriman tagihan. Dokumen yang di lengkapi sbb: Surat penyataan, Laporan medis awal dan medis lanjutan (PEC, Medis harian, Medis indikasi, Medis konsul, hasil pemeriksaan penunjang) Jika tidak dilengkapi saat proses penagihan klaim akan kami kembalikan ke RS..',
-        },
-        detail: null,
-      },
-      {
-        header: {
-          PayorID: 'ALLIANZ',
-          CorporateID: 'HCP_WOORI',
-          PolicyNo: 'Q462',
-          ClaimID: '28638308',
-          MemberID: '077000001179',
-          MemberName: 'MELA SUSILOWATI',
-          CardNo: '8000210106923830',
-          NIK: '',
-          PD: 'P',
-          ClaimType: 'M',
-          ClaimStatus: '40',
-          ProviderID: '1479',
-          ProviderName: 'RS PONDOK INDAH PURI INDAH',
-          AdmissionDate: '2024-12-06',
-          DischargeDate: '2024-12-09',
-          Days: '4',
-          ICDX: 'S52.0',
-          ICDXDesc: 'Fracture of upper end of ulna',
-          CoverageID: 'H&S',
-          PlanID: 'PLAN A-IDR',
-          DisabilityNo: '28638308',
-          AmtInccured: '45000000',
-          AmtApproved: '3000000',
-          AmtNotApproved: '42000000',
-          AmtAsoApproved: '0',
-          Remarks:
-            'Total biaya diajukan : Rp45.000.000 Total biaya yang disetujui: Rp.3.000.000 Total biaya yang tidak disetujui: Rp.42.000.000 (terdiri overlimit biaya) menjadi tanggungan peserta yang harus diselesaikan di RS.\r\nPenjaminan biaya rawat inap untuk diagnosa Schizophreni dapat diberikan,Informasi biaya rawat inap ini bersifat sementara, dan dapat berubah sesuai tagihan akhir dari RS.Khusus Peserta COB BPJS, wajib melampirkan surat rujukan faskes pertama dan Surat Eligibilitas Peserta (SEP),NOTE: Sebagai syarat pembayaran tagihan klaim agar dilengkapi kelengkapan dokumen saat pengiriman tagihan. Dokumen yang di lengkapi sbb: Surat penyataan, Laporan medis awal dan medis lanjutan (PEC, Medis harian, Medis indikasi, Medis konsul, hasil pemeriksaan penunjang) Jika tidak dilengkapi saat proses penagihan klaim akan kami kembalikan ke RS..',
-        },
-        detail: null,
-      },
-      {
-        header: {
-          PayorID: 'ALLIANZ',
-          CorporateID: 'HSCPX_IND',
-          PolicyNo: 'POLIC123',
-          ClaimID: '28638271',
-          MemberID: '9090901',
-          MemberName: 'DUMMY AGENT 1',
-          CardNo: '8000210106923707',
-          NIK: '',
-          PD: 'D',
-          ClaimType: 'M',
-          ClaimStatus: '21',
-          ProviderID: '0797',
-          ProviderName: 'RS. MEDISTRA',
-          AdmissionDate: '2024-12-04',
-          DischargeDate: '2024-12-04',
-          Days: '1',
-          ICDX: 'J00',
-          ICDXDesc: 'Acute Nasopharyngitis (common cold)',
-          CoverageID: 'H&S',
-          PlanID: 'HS-1203',
-          DisabilityNo: '',
-          AmtInccured: '0',
-          AmtApproved: '0',
-          AmtNotApproved: '0',
-          AmtAsoApproved: '0',
-          Remarks: 'DUMMY 1',
-        },
-        detail: null,
-      },
-      {
-        header: {
-          PayorID: 'ALLIANZ',
-          CorporateID: 'IDMBUKALPK',
-          PolicyNo: 'QD60',
-          ClaimID: '28638309',
-          MemberID: '013020000003041',
-          MemberName: 'AGUS BUNARDY',
-          CardNo: '8000210106923749',
-          NIK: '',
-          PD: 'P',
-          ClaimType: 'M',
-          ClaimStatus: '40',
-          ProviderID: '1066',
-          ProviderName: 'MRCCC-SILOAM HOSPITALS SEMANGGI SPECIALIST C',
-          AdmissionDate: '2024-12-06',
-          DischargeDate: '2024-12-09',
-          Days: '3',
-          ICDX: 'A09',
-          ICDXDesc: 'Other gastroenteritis and colitis of infectious and unspecified origin',
-          CoverageID: 'H&S',
-          PlanID: 'IDM-200-NB',
-          DisabilityNo: '28638309',
-          AmtInccured: '38000000',
-          AmtApproved: '5230000',
-          AmtNotApproved: '32770000',
-          AmtAsoApproved: '0',
-          Remarks:
-            'Total biaya diajukan : Rp38.000.000 Total biaya yang disetujui: Rp.5.230.000 Total biaya yang tidak disetujui: Rp.32.770.000 (terdiri dari innerlimit kamar,dokter,kamar) menjadi tanggungan peserta yang harus diselesaikan di RS.\r\nPenjaminan biaya rawat inap untuk diagnosa GEA dapat diberikan,Informasi biaya rawat inap ini bersifat sementara, dan dapat berubah sesuai tagihan akhir dari RS.Khusus Peserta COB BPJS, wajib melampirkan surat rujukan faskes pertama dan Surat Eligibilitas Peserta (SEP),NOTE: Sebagai syarat pembayaran tagihan klaim agar dilengkapi kelengkapan dokumen saat pengiriman tagihan. Dokumen yang di lengkapi sbb: Surat penyataan, Laporan medis awal dan medis lanjutan (PEC, Medis harian, Medis indikasi, Medis konsul, hasil pemeriksaan penunjang) Jika tidak dilengkapi saat proses penagihan klaim akan kami kembalikan ke RS.\r\n.',
-        },
-        detail: null,
-      },
-    ],
-  } as const
-
-  const startDate = dayjs().subtract(1, 'w').format('YYYY-MM-DD')
-  const endDate = dayjs().format('YYYY-MM-DD')
-
   console.log(data)
 
   const totalPasien =
-    data?.data?.reduce((acc, curr) => {
-      const cardNo = curr?.header?.CardNo
+    data?.reduce((acc, curr) => {
+      const cardNo = curr?.Header?.CardNo
       if (cardNo && !acc.includes(cardNo)) acc.push(cardNo)
       return acc
     }, [] as string[])?.length || 0
 
   const totalProvider =
-    data?.data?.reduce((acc, curr) => {
-      const ProviderID = curr?.header?.ProviderID
+    data?.reduce((acc, curr) => {
+      const ProviderID = curr?.Header?.ProviderID
       if (ProviderID && !acc.includes(ProviderID)) acc.push(ProviderID)
       return acc
     }, [] as string[])?.length || 0
 
   const totalAdmission =
-    data?.data?.reduce((acc, curr) => {
-      const AdmissionDate = curr?.header?.CardNo
+    data?.reduce((acc, curr) => {
+      const AdmissionDate = curr?.Header?.CardNo
       if (AdmissionDate && !acc.includes(AdmissionDate)) acc.push(AdmissionDate)
       return acc
     }, [] as string[])?.length || 0
 
   const totalDischarge =
-    data?.data?.reduce((acc, curr) => {
-      const DischargeDate = curr?.header?.DischargeDate
+    data?.reduce((acc, curr) => {
+      const DischargeDate = curr?.Header?.DischargeDate
       if (DischargeDate && !acc.includes(DischargeDate)) acc.push(DischargeDate)
       return acc
     }, [] as string[])?.length || 0
-
-  console.log({
-    totalPasien,
-    totalProvider,
-    totalAdmission,
-    totalDischarge,
-  })
 
   const cards: {
     id: string
@@ -398,36 +161,93 @@ export default function App() {
   ]
 
   const headerData = Object.entries(
-    data.data.reduce(
+    data?.reduce(
       (acc, item) => {
-        const key = item.header.ICDXDesc || '-'
+        const key = item.Header?.ICDXDesc || '-'
         if (!acc[key]) acc[key] = 0
         acc[key] += 1
         return acc
       },
-      {} as { icdxDesc: string; total: number },
-    ),
+      {} as { ICDXDesc: string; total: number },
+    ) || {},
   )
-
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
   const handleLogout = () => {
     localStorage.removeItem('token')
     dispatch(deleteToken())
     navigate('/login')
   }
 
+  // const intervalRef = useRef<NodeJS.Timeout | string | number | undefined | null>(null)
+  //
+  // useEffect(() => {
+  //   if (!intervalRef.current) {
+  //     intervalRef.current = setInterval(async () => {
+  //       await refetch()
+  //     }, 10000)
+  //   }
+  //
+  //   return () => {
+  //     clearInterval(intervalRef.current)
+  //   }
+  // }, [])
+
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  useEffect(() => {
+    if (!intervalRef.current) {
+      intervalRef.current = setInterval(async () => {
+        try {
+          await refetch()
+        } catch (err) {
+          console.error('Refetch failed:', err)
+        }
+      }, 600000)
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [refetch])
+
+  if (!data) return null
+
   return Root({
-    backgroundColor: 'theme.base',
+    backgroundColor: 'theme.base.deep',
     color: 'theme.base.content',
     maxHeight: '100dvh',
+    padding: 'theme.spacing.md',
+    css: {
+      '@keyframes breath': {
+        from: {
+          animationTimingFunction: 'ease-out',
+        },
+        to: {
+          transform: 'scale(1.25) translateY(-5px) perspective(1px)',
+          textShadow: '0 0 20px var(--really-green)',
+          animationTimingFunction: 'ease-in-out',
+        },
+      },
+    },
     children: Column({
       flex: 1,
+      backgroundColor: 'theme.base',
+      boxShadow: 'theme.shadow.md',
+      borderRadius: 'theme.radius.xl',
       gap: 'theme.spacing.md',
       children: [
         Row({
-          padding: 'theme.spacing.md',
+          padding: 'theme.spacing.lg',
           gap: 'theme.spacing.sm',
           children: [
-            Span('Daily Monitoring', { fontSize: 'theme.text.3xl', fontWeight: 'bold' }),
+            Span('Daily Monitoring', {
+              fontSize: 'theme.text.3xl',
+              fontWeight: '800',
+              animation: 'breath',
+            }),
             Row({
               flex: 1,
               justifyContent: 'flex-end',
@@ -439,22 +259,68 @@ export default function App() {
                     alignItems: 'center',
                     children: [
                       Button({
-                        sx: buttonTextSX.primary,
+                        sx: buttonTextSX.baseContent,
                         gap: 'theme.spacing.sm',
                         onClick: () => setTheme(theme.mode === 'light' ? darkTheme : lightTheme),
                         children: Node(theme.mode === 'light' ? DarkMode : LightMode),
                       }),
                       Node(AccountCircle),
-                      Text('DBS'),
+                      Text(payor.name),
                       Button({
                         sx: buttonTextSX.danger,
-                        onClick: handleLogout,
+                        onClick: () => setShowLogoutModal(true),
                         startIcon: Node(LogoutRounded).render(),
                         children: 'Logout',
                       }),
                     ],
                   }),
                 }),
+                showLogoutModal &&
+                  Modal({
+                    open: showLogoutModal,
+                    onClose: () => setShowLogoutModal(false),
+                    children: Center({
+                      minHeight: '100dvh',
+                      children: Column({
+                        background: `linear-gradient(135deg, theme.base.deep 0%, theme.base 100%)`,
+                        maxWidth: 'theme.breakpoint.md',
+                        alignItems: 'center',
+                        gap: 'theme.spacing.md',
+                        padding: 'theme.spacing.lg',
+                        borderRadius: 'theme.radius.lg',
+                        color: 'theme.base.content',
+                        children: [
+                          Typography({
+                            variant: 'h6',
+                            fontWeight: 'bold',
+                            color: 'theme.text.primary',
+                            children: 'Konfirmasi Logout',
+                          }),
+                          Text('Apakah kamu yakin ingin keluar dari aplikasi ini?'),
+                          Row({
+                            justifyContent: 'center',
+                            gap: 'theme.spacing.md',
+                            mt: 'theme.spacing.md',
+                            children: [
+                              Button({
+                                sx: buttonTextSX.baseContent,
+                                onClick: () => setShowLogoutModal(false),
+                                children: 'Batal',
+                              }),
+                              Button({
+                                sx: buttonTextSX.danger,
+                                onClick: () => {
+                                  setShowLogoutModal(false)
+                                  handleLogout()
+                                },
+                                children: 'Logout',
+                              }),
+                            ],
+                          }),
+                        ],
+                      }),
+                    }),
+                  }),
               ],
             }),
           ],
@@ -462,15 +328,19 @@ export default function App() {
         Column({
           flex: 1,
           gap: 'theme.spacing.md',
+          paddingInline: 'theme.spacing.lg',
+          paddingBlock: 'theme.spacing.sm',
           children: [
             Row({
               flex: 1,
+              flexBasis: '40%',
               flexShrink: 0,
+              maxHeight: 350,
+              gap: 'theme.spacing.md',
               children: [
                 Row({
                   flexBasis: '60%',
                   gap: 20,
-                  paddingInline: 'theme.spacing.md',
                   children: [
                     Column({
                       flex: 1,
@@ -686,12 +556,10 @@ export default function App() {
                   ],
                 }),
                 Column({
-                  gap: 'theme.spacing.sm',
-                  maxHeight: 300,
                   flexBasis: '40%',
+                  gap: 'theme.spacing.sm',
                   overflow: 'hidden',
                   padding: 'theme.spacing.md',
-                  marginInline: 'theme.spacing.md',
                   backgroundColor: 'theme.neutral',
                   borderRadius: 'theme.radius.lg',
                   boxShadow: 'theme.shadow.md',
@@ -803,10 +671,10 @@ export default function App() {
                             }),
                           }),
                           Tbody({
-                            children: headerData.map(([icdxDesc, total]) =>
+                            children: headerData.map(([ICDXDesc, total]) =>
                               Tr({
                                 children: [
-                                  Td({ children: icdxDesc }),
+                                  Td({ children: ICDXDesc }),
                                   Td({
                                     children: total.toString(),
                                     fontWeight: 'bold',
@@ -826,13 +694,12 @@ export default function App() {
             }),
             Column({
               flex: 1,
+              flexBasis: '60%',
               position: isMainTableFullscreen ? 'fixed' : undefined,
               inset: isMainTableFullscreen ? 0 : undefined,
               zIndex: isMainTableFullscreen ? '9999999999999' : undefined,
               backgroundColor: 'theme.base',
               maxHeight: '100vh',
-              paddingBlock: 'theme.spacing.sm',
-              paddingInline: 'theme.spacing.md',
               gap: 'theme.spacing.sm',
               children: [
                 Row({
@@ -841,7 +708,6 @@ export default function App() {
                   children: [
                     Row({
                       flex: 1,
-                      //placeContent: 'center',
                       placeItems: 'center',
                       gap: 'theme.spacing.sm',
                       children: [
@@ -950,29 +816,29 @@ export default function App() {
                         }),
                       }),
                       Tbody({
-                        children: data.data.map((item, index) =>
+                        children: data.map((item, index) =>
                           Tr({
                             key: index,
                             children: [
-                              Td({ children: item.header.MemberID || '-', textAlign: 'center' }),
+                              Td({ children: item.Header.MemberID || '-', textAlign: 'center' }),
 
                               Td({
-                                children: item.header.MemberName || '-',
+                                children: item.Header.MemberName || '-',
                               }),
                               Td({
-                                children: item.header.ClaimStatus || '-',
+                                children: item.Header.ClaimStatus || '-',
                                 textAlign: 'center',
                               }),
                               Td({
-                                children: item.header.ProviderName || '-',
+                                children: item.Header.ProviderName || '-',
                                 textAlign: 'center',
                               }),
                               Td({
-                                children: dayjs(item.header.AdmissionDate, 'YYYY-MM-DD').format('DD MMMM YYYY') || '-',
+                                children: dayjs(item.Header.AdmissionDate, 'YYYY-MM-DD').format('DD MMMM YYYY') || '-',
                                 textAlign: 'center',
                               }),
                               Td({
-                                children: item.header.Days || '-',
+                                children: item.Header.Days || '-',
                                 textAlign: 'center',
                               }),
                             ],
@@ -991,15 +857,16 @@ export default function App() {
         Section({
           backgroundColor: 'theme.text.primary',
           color: 'theme.text.light',
-          padding: 'theme.spacing.xs',
+          paddingInline: 'theme.spacing.lg',
+          paddingBlock: 'theme.spacing.sm',
           textAlign: 'center',
           children: Center({
             children: Column({
-              maxWidth: '800px',
               children: [
                 Text('© 2025 Dashboard Daily Monitoring.', {
                   opacity: 0.7,
                   fontSize: '0.9rem',
+                  margin: 0,
                 }),
               ],
             }),
