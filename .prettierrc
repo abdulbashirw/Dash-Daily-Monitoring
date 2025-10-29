@@ -6,5 +6,5 @@
   "arrowParens": "avoid",
   "semi": false,
   "endOfLine": "lf",
-  "printWidth": 160
+  "printWidth": 120
 }

@@ -1,18 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { API_V3 } from '@src/constants/urls.const.ts'
-import type { DailyMonitoringData, DailyMonitoringPayload } from '@src/redux/type/daily-monitoring.type.ts'
+import { API } from '@src/constants/urls.const.ts'
+import type { AuthData, AuthPayload } from '@src/redux/type/auth.type.ts'
+import type { ResponseData } from '@src/redux/type/base.type.ts'
 
-const dailyMonitoringServiceApi = createApi({
-  reducerPath: 'DAILY_MONITORING_API',
-  baseQuery: fetchBaseQuery({ baseUrl: API_V3 }),
+const authServiceApi = createApi({
+  reducerPath: 'AUTH_API',
+  baseQuery: fetchBaseQuery({ baseUrl: API }),
   tagTypes: [],
   endpoints: build => ({
-    getDailyMonitoring: build.query<{ data: DailyMonitoringData }, { token: string; payload: DailyMonitoringPayload }>({
-      query: ({ token, payload }) => ({
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        url: 'AdmGetDailyMonitoring',
+    login: build.mutation<ResponseData<AuthData>, { payload: AuthPayload }>({
+      query: ({ payload }) => ({
+        url: 'login',
         method: 'POST',
         body: payload,
       }),
@@ -20,5 +18,5 @@ const dailyMonitoringServiceApi = createApi({
   }),
 })
 
-export const { useGetDailyMonitoringQuery } = dailyMonitoringServiceApi
-export default dailyMonitoringServiceApi
+export const { useLoginMutation } = authServiceApi
+export default authServiceApi

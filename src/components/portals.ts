@@ -4,7 +4,7 @@ import { useTheme } from '@src/hooks/useTheme'
 import { easing, type PopoverProps } from '@mui/material'
 import tinycolor from 'tinycolor2'
 import { type CSSProperties, useEffect } from 'react'
-import { PortalProviders } from '@src/components/Providers'
+import { PortalProviders } from '@src/components/Wrapper.ts'
 
 type ConfirmProps = {
   title: string
@@ -99,7 +99,10 @@ export const Confirm = Portal<ConfirmProps>(
                       portal.unmount()
                     },
                     children: acceptLabel,
-                    sx: { backgroundColor: acceptColor, color: tinycolor.isReadable(acceptColor, 'white') ? 'white' : 'black' },
+                    sx: {
+                      backgroundColor: acceptColor,
+                      color: tinycolor.isReadable(acceptColor, 'white') ? 'white' : 'black',
+                    },
                   }),
                 ],
               }),
@@ -111,51 +114,54 @@ export const Confirm = Portal<ConfirmProps>(
   },
 )
 
-export const Menu = Portal<Partial<Omit<PopoverProps, keyof CSSProperties | 'children'>>>(PortalProviders, function Menu({ children, portal, ...menuProps }) {
-  const theme = useTheme()
+export const Menu = Portal<Partial<Omit<PopoverProps, keyof CSSProperties | 'children'>>>(
+  PortalProviders,
+  function Menu({ children, portal, ...menuProps }) {
+    const theme = useTheme()
 
-  useEffect(() => {
-    const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        portal.unmount()
+    useEffect(() => {
+      const handleEsc = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          portal.unmount()
+        }
       }
-    }
 
-    window.addEventListener('keydown', handleEsc)
-    return () => {
-      window.removeEventListener('keydown', handleEsc)
-    }
-  }, [])
+      window.addEventListener('keydown', handleEsc)
+      return () => {
+        window.removeEventListener('keydown', handleEsc)
+      }
+    }, [])
 
-  return Popover({
-    open: true,
-    disablePortal: true,
-    disableAutoFocus: true,
-    anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-    ...menuProps,
-    theme: theme.system,
-    onClose: () => {
-      portal.unmount()
-    },
-    slotProps: {
-      backdrop: {
-        onContextMenu: e => {
-          e.preventDefault()
-          if (e.target === e.currentTarget) {
-            portal.unmount()
-          }
+    return Popover({
+      open: true,
+      disablePortal: true,
+      disableAutoFocus: true,
+      anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+      ...menuProps,
+      theme: theme.system,
+      onClose: () => {
+        portal.unmount()
+      },
+      slotProps: {
+        backdrop: {
+          onContextMenu: e => {
+            e.preventDefault()
+            if (e.target === e.currentTarget) {
+              portal.unmount()
+            }
+          },
+        },
+        paper: {
+          sx: {
+            padding: '8px 0',
+            backgroundColor: 'theme.base',
+          },
         },
       },
-      paper: {
-        sx: {
-          padding: '8px 0',
-          backgroundColor: 'theme.base',
-        },
-      },
-    },
-    children,
-  })
-})
+      children,
+    })
+  },
+)
 
 // Modal
 type ModalProps = {

@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useLayoutEffect, useState } from 'react'
+import { StrictMode, useEffect, useMemo, useState } from 'react'
 import { store } from '@src/redux/store'
 import { type Children, Node, type NodeElement, type Theme } from '@meonode/ui'
 import { Provider as ReduxProvider } from 'react-redux'
@@ -7,24 +7,32 @@ import lightTheme from '@src/constants/themes/lightTheme.ts'
 import darkTheme from '@src/constants/themes/darkTheme.ts'
 import { ThemeProvider as MeoThemeProvider } from '@meonode/ui'
 
-interface ProvidersProps {
+interface WrappersProps {
   children: NodeElement
 }
 
-const ThemeProvider = ({ children }: { children?: Children }) => {
-  const [initialTheme, setInitialTheme] = useState<Theme>(lightTheme)
-  useLayoutEffect(() => {
-    const localTheme = localStorage.getItem('theme') || 'light'
-    setInitialTheme(localTheme === 'dark' ? lightTheme : darkTheme)
+const ThemeWrapper = ({ children }: { children?: Children }) => {
+  const initialTheme = useMemo<Theme>(() => {
+    // Initialize from localStorage
+    const stored = localStorage.getItem('theme')
+    return stored === 'dark' ? darkTheme : lightTheme
   }, [])
 
   return MeoThemeProvider({ theme: initialTheme, children }).render()
 }
 
-export const Providers = ({ children }: ProvidersProps) =>
-  Node(ReduxProvider, { store, children: Node(ThemeProvider, { children: Node(SnackbarProvider, { children }) }) })
+export const Wrapper = ({ children }: WrappersProps) =>
+  Node(ReduxProvider, {
+    store,
+    children: Node(ThemeWrapper, {
+      children: Node(SnackbarProvider, {
+        anchorOrigin: { vertical: 'top', horizontal: 'right' },
+        children,
+      }),
+    }),
+  })
 
-const PortalThemeProvider = ({ children }: { children?: Children }) => {
+const PortalThemeWrapper = ({ children }: { children?: Children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     // Initialize from localStorage
     const stored = localStorage.getItem('theme')
@@ -49,4 +57,6 @@ const PortalThemeProvider = ({ children }: { children?: Children }) => {
   return MeoThemeProvider({ theme, children }).render()
 }
 
-export const PortalProviders = Node(StrictMode, { children: Node(ReduxProvider, { store, children: Node(PortalThemeProvider) }) })
+export const PortalWrappers = Node(StrictMode, {
+  children: Node(ReduxProvider, { store, children: Node(PortalThemeWrapper) }),
+})

@@ -21,19 +21,31 @@ export const buttonSX = {
     backgroundColor: 'theme.neutral',
     color: 'theme.neutral.content',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.neutral.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.neutral.content',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   primary: {
     backgroundColor: 'theme.primary',
     color: 'theme.primary.content',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.primary.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.primary.content',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   secondary: {
     backgroundColor: 'theme.secondary',
     color: 'theme.secondary.content',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.secondary.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.secondary.content',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   accent: {
     backgroundColor: 'theme.accent',
@@ -45,13 +57,21 @@ export const buttonSX = {
     backgroundColor: 'theme.success',
     color: 'theme.success.content',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.success.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.success.content',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   warning: {
     backgroundColor: 'theme.warning',
     color: 'theme.warning.content',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.warning.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.warning.content',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   danger: {
     backgroundColor: 'theme.danger',
@@ -63,28 +83,44 @@ export const buttonSX = {
 
 export const buttonTextSX = {
   base: {
-    color: 'theme.base.content',
+    color: 'theme.base',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.primary.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.primary',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   primary: {
-    color: 'theme.primary.content',
+    color: 'theme.primary',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.primary.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.primary',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   secondary: {
-    color: 'theme.secondary.content',
+    color: 'theme.secondary',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.secondary.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.secondary',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   warning: {
-    color: 'theme.warning.content',
+    color: 'theme.warning',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.warning.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': {
+      color: 'theme.warning',
+      width: `24px!important`,
+      height: `24px!important`,
+    },
   },
   danger: {
-    color: 'theme.danger.content',
+    color: 'theme.danger',
     fontWeight: 'bold',
-    '& .MuiCircularProgress-root': { color: 'theme.danger.content', width: `24px!important`, height: `24px!important` },
+    '& .MuiCircularProgress-root': { color: 'theme.danger', width: `24px!important`, height: `24px!important` },
   },
 }
