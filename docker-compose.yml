@@ -1,6 +1,6 @@
 services:
   dev:
-    image: gcr.io/project-digital-admedika/hc-cms-dev:1.0.0
+    image: dev
     container_name: dash-dailyMonitoring-dev
     build:
       context: .

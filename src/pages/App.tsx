@@ -45,6 +45,7 @@ import { useNavigate } from 'react-router'
 import { deleteToken } from '@src/redux/slice/auth.slice.ts'
 import { useAppDispatch } from '@src/redux/store.ts'
 import tinycolor from 'tinycolor2'
+import { useSnackbar } from 'notistack'
 
 function parseJwt(token) {
   const base64Url = token.split('.')[1]
@@ -67,6 +68,7 @@ export default function App() {
   const token = useGetToken()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
 
   // States
   const [isMainTableFullscreen, setIsMainTableFullscreen] = useState(false)
@@ -75,20 +77,25 @@ export default function App() {
   const startDate = dayjs().subtract(1, 'w').format('YYYY-MM-DD')
   const endDate = dayjs().format('YYYY-MM-DD')
 
-  const { data: { data } = { data: undefined }, refetch } = useGetDailyMonitoringQuery(
+  const {
+    data: { data } = { data: undefined },
+    refetch,
+    isError,
+    isSuccess,
+  } = useGetDailyMonitoringQuery(
     {
       payload: {
         payor_code: payor.payor_code,
         start_date: startDate,
         end_date: endDate,
-        //start_date: '2025-01-01',
-        //end_date: '2025-01-29',
+        //start_date: '2025-10-30',
+        //end_date: '2025-10-31',
       },
     },
     { skip: !token },
   )
 
-  console.log(data)
+  //console.log(data)
 
   const totalPasien =
     data?.reduce((acc, curr) => {
@@ -217,7 +224,13 @@ export default function App() {
     }
   }, [refetch])
 
-  if (!data) return null
+  useEffect(() => {
+    if ((isError || isSuccess) && !data) {
+      enqueueSnackbar('Gagal Memuat Data', {
+        variant: 'warning',
+      })
+    }
+  }, [isError, isSuccess])
 
   return Root({
     backgroundColor: 'theme.base.deep',
@@ -460,12 +473,12 @@ export default function App() {
                     }),
                     Column({
                       flex: 1,
-                      flexhShrink: 0,
+                      flexShrink: 0,
                       gap: 'theme.spacing.md',
                       children: [
                         Column({
                           flex: 1,
-                          flexhShrink: 0,
+                          flexShrink: 0,
                           padding: 'theme.spacing.md',
                           gap: 'theme.spacing.sm',
                           borderRadius: 'theme.radius.lg',
@@ -509,7 +522,7 @@ export default function App() {
                         }),
                         Column({
                           flex: 1,
-                          flexhShrink: 0,
+                          flexShrink: 0,
                           padding: 'theme.spacing.md',
                           gap: 'theme.spacing.sm',
                           borderRadius: 'theme.radius.lg',
@@ -821,7 +834,7 @@ export default function App() {
                         }),
                       }),
                       Tbody({
-                        children: data.map((item, index) =>
+                        children: data?.map((item, index) =>
                           Tr({
                             key: index,
                             children: [
