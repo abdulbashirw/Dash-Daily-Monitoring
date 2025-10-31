@@ -62,7 +62,7 @@ const LoginPage = () => {
             zIndex: 2,
             children: Column({
               width: '100%',
-              maxWidth: 400,
+              maxWidth: 500,
               backgroundColor: theme => tinycolor(theme.system.base.default).setAlpha(0.6).toString(),
               backdropFilter: 'blur(10px)',
               borderRadius: 'theme.radius.xl',
@@ -82,17 +82,17 @@ const LoginPage = () => {
                 }),
                 // Title
                 Div({
-                  children: Img({ src: LogoImage, alt: 'MeoNode Logo', width: 150, height: 'auto' }),
+                  children: Img({ src: LogoImage, alt: 'MeoNode Logo', width: 175, height: 'auto' }),
                 }),
 
                 Span('LOGIN', {
-                  fontSize: 'theme.text.2xl',
+                  fontSize: 'theme.text.3xl',
                   color: 'theme.base.content',
                   fontWeight: 'bold',
                 }),
                 Span('Dashboard Daily Monitoring', {
                   opacity: 0.8,
-                  fontSize: 'theme.text.md',
+                  fontSize: 'theme.text.xl',
                   color: 'theme.base.content',
                 }),
 

@@ -81,6 +81,8 @@ export default function App() {
         payor_code: payor.payor_code,
         start_date: startDate,
         end_date: endDate,
+        //start_date: '2025-01-01',
+        //end_date: '2025-01-29',
       },
     },
     { skip: !token },
@@ -95,12 +97,14 @@ export default function App() {
       return acc
     }, [] as string[])?.length || 0
 
-  const totalProvider =
-    data?.reduce((acc, curr) => {
-      const ProviderID = curr?.Header?.ProviderID
-      if (ProviderID && !acc.includes(ProviderID)) acc.push(ProviderID)
-      return acc
-    }, [] as string[])?.length || 0
+  // const totalProvider =
+  //   data?.reduce((acc, curr) => {
+  //     const ProviderID = curr?.Header?.ProviderID
+  //     if (ProviderID && !acc.includes(ProviderID)) acc.push(ProviderID)
+  //     return acc
+  //   }, [] as string[])?.length || 0
+
+  const totalProvider = new Set(data?.map(item => item?.Header?.ProviderID).filter(Boolean)).size || 0
 
   const totalAdmission =
     data?.reduce((acc, curr) => {
@@ -129,7 +133,7 @@ export default function App() {
     {
       id: 'C1',
       value: totalPasien.toString(),
-      label: 'Total Pasien',
+      label: 'Total Patient',
       icon: PersonalInjuryOutlined,
       gradientStart: '#11998e', // Hijau Tua
       gradientEnd: '#38ef7d',
@@ -144,7 +148,7 @@ export default function App() {
     },
     {
       id: 'C3',
-      label: 'Total Admision',
+      label: 'Total Admission',
       value: totalAdmission.toString(),
       icon: LocalPharmacyOutlined,
       gradientStart: '#0072ff', // Biru Tua
@@ -663,7 +667,7 @@ export default function App() {
                                   style: { width: '100%' },
                                 }),
                                 Th({
-                                  children: 'Total Pentient',
+                                  children: 'Total Patient',
                                   padding: 'theme.spacing.sm',
                                   style: { width: 'auto', whiteSpace: 'nowrap' },
                                 }),
@@ -718,7 +722,7 @@ export default function App() {
                           color: 'theme.text.primary',
                           paddingBlock: 'theme.spacing.sm',
                           textAlign: 'center',
-                          children: 'List Member',
+                          children: 'Member List',
                         }),
                       ],
                     }),
@@ -737,7 +741,8 @@ export default function App() {
                   flex: 1,
                   gap: 'theme.spacing.sm',
                   overflow: 'auto',
-                  backgroundColor: 'theme.secondary',
+                  backgroundColor: 'theme.base',
+                  border: '1px solid theme.secondary',
                   borderTopLeftRadius: 'theme.spacing.sm',
                   borderTopRightRadius: 'theme.spacing.sm',
                   children: Table({
@@ -826,7 +831,8 @@ export default function App() {
                                 children: item.Header.MemberName || '-',
                               }),
                               Td({
-                                children: item.Header.ClaimStatus || '-',
+                                children:
+                                  item.Header.PD === 'P' ? 'Principal' : item.Header.PD === 'D' ? 'Dependent' : '-',
                                 textAlign: 'center',
                               }),
                               Td({

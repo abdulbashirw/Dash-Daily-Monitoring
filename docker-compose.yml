@@ -1,0 +1,52 @@
+services:
+  dev:
+    image: gcr.io/project-digital-admedika/hc-cms-dev:1.0.0
+    container_name: dash-dailyMonitoring-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    platform: linux/amd64
+    ports:
+      - '4173:4173'
+    env_file:
+      - .env.development
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  staging:
+    image: gcr.io/project-digital-admedika/hc-cms-staging:1.0.0
+    container_name: dash-dailyMonitoring-staging
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: staging
+    platform: linux/amd64
+    ports:
+      - '4173:4173'
+    env_file:
+      - .env.staging
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  prod:
+    image: gcr.io/project-digital-admedika/hc-cms-prod:1.0.0
+    container_name: dash-dailyMonitoring-prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    platform: linux/amd64
+    ports:
+      - '4173:4173'
+    env_file:
+      - .env.production
+    restart: unless-stopped
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

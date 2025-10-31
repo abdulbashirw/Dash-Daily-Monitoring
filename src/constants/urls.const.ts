@@ -1,2 +1,2 @@
-export const API = 'https://repi-api-336781009919.asia-southeast2.run.app/api/v1'
-export const NAHSEHAT_API_V3 = 'https://repi-api-336781009919.asia-southeast2.run.app/api/v3'
+export const API = import.meta.env.VITE_BE_API
+export const NAHSEHAT_API_V3 = import.meta.env.VITE_NAHSEHAT_API_V3
