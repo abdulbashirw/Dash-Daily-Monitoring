@@ -70,6 +70,9 @@ export default function App() {
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
 
+  const summaryRef = useRef<HTMLDivElement | null>(null)
+  const [diagnosticTableHeight, setDiagnosticTableHeight] = useState<number>()
+
   // States
   const [isMainTableFullscreen, setIsMainTableFullscreen] = useState(false)
 
@@ -232,6 +235,12 @@ export default function App() {
     }
   }, [isError, isSuccess])
 
+  useEffect(() => {
+    if (summaryRef.current) {
+      setDiagnosticTableHeight(summaryRef.current.getBoundingClientRect().height)
+    }
+  }, [summaryRef.current])
+
   return Root({
     backgroundColor: 'theme.base.deep',
     color: 'theme.base.content',
@@ -352,6 +361,7 @@ export default function App() {
               gap: 'theme.spacing.md',
               children: [
                 Row({
+                  ref: summaryRef,
                   flexBasis: '60%',
                   gap: 20,
                   children: [
@@ -569,7 +579,7 @@ export default function App() {
                   ],
                 }),
                 Column({
-                  maxHeight: 350,
+                  maxHeight: diagnosticTableHeight,
                   flexBasis: '40%',
                   gap: 'theme.spacing.sm',
                   overflow: 'hidden',
