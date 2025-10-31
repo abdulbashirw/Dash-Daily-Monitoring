@@ -13,7 +13,7 @@ export default function AuthWrapper() {
   useEffect(() => {
     if (!token && !insecurePaths.includes(location.pathname)) {
       navigate('/login', { replace: true })
-    } else if (insecurePaths.includes(location.pathname)) {
+    } else if (!!token && insecurePaths.includes(location.pathname)) {
       navigate('/', { replace: true })
     }
   }, [token])

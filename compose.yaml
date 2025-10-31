@@ -1,6 +1,21 @@
 services:
+  local:
+    image: hc-cms-local
+    container_name: dash-dailyMonitoring-local
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    platform: linux/amd64
+    ports:
+      - '4173:4173'
+    env_file:
+      - .env.development
+    restart: unless-stopped
+    networks:
+      - app-network
   dev:
-    image: dev
+    image: gcr.io/project-digital-admedika/hc-cms-dev:1.0.0
     container_name: dash-dailyMonitoring-dev
     build:
       context: .

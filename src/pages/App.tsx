@@ -349,10 +349,6 @@ export default function App() {
           paddingBlock: 'theme.spacing.sm',
           children: [
             Row({
-              flex: 1,
-              flexBasis: '40%',
-              flexShrink: 0,
-              maxHeight: 350,
               gap: 'theme.spacing.md',
               children: [
                 Row({
@@ -573,6 +569,7 @@ export default function App() {
                   ],
                 }),
                 Column({
+                  maxHeight: 350,
                   flexBasis: '40%',
                   gap: 'theme.spacing.sm',
                   overflow: 'hidden',
@@ -711,7 +708,6 @@ export default function App() {
             }),
             Column({
               flex: 1,
-              flexBasis: '60%',
               position: isMainTableFullscreen ? 'fixed' : undefined,
               inset: isMainTableFullscreen ? 0 : undefined,
               zIndex: isMainTableFullscreen ? '9999999999999' : undefined,
