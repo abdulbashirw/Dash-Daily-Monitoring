@@ -1,6 +1,6 @@
 services:
   local:
-    image: hc-cms-local
+    image: dm-local
     container_name: dash-dailyMonitoring-local
     build:
       context: .
@@ -15,7 +15,7 @@ services:
     networks:
       - app-network
   dev:
-    image: gcr.io/project-digital-admedika/hc-cms-dev:1.0.0
+    image: gcr.io/project-digital-admedika/dash-dm-dev:1.0.0
     container_name: dash-dailyMonitoring-dev
     build:
       context: .
@@ -31,7 +31,7 @@ services:
       - app-network
 
   staging:
-    image: gcr.io/project-digital-admedika/hc-cms-staging:1.0.0
+    image: gcr.io/project-digital-admedika/dash-dm-staging:1.0.0
     container_name: dash-dailyMonitoring-staging
     build:
       context: .
@@ -47,7 +47,7 @@ services:
       - app-network
 
   prod:
-    image: gcr.io/project-digital-admedika/hc-cms-prod:1.0.0
+    image: gcr.io/project-digital-admedika/dash-dm-prod:1.0.0
     container_name: dash-dailyMonitoring-prod
     build:
       context: .

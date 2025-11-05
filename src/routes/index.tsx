@@ -11,7 +11,6 @@ type RouteType = Omit<RouteObject, 'children' | 'element'> & {
 
 const routes: RouteType[] = [
   {
-    path: '/',
     element: AuthWrapper,
     children: [
       {

@@ -91,8 +91,8 @@ export default function App() {
         payor_code: payor.payor_code,
         start_date: startDate,
         end_date: endDate,
-        //start_date: '2025-10-30',
-        //end_date: '2025-10-31',
+        //start_date: '2025-01-01',
+        //end_date: '2025-01-31',
       },
     },
     { skip: !token },
@@ -102,7 +102,7 @@ export default function App() {
 
   const totalPasien =
     data?.reduce((acc, curr) => {
-      const cardNo = curr?.Header?.CardNo
+      const cardNo = curr?.header?.CardNo
       if (cardNo && !acc.includes(cardNo)) acc.push(cardNo)
       return acc
     }, [] as string[])?.length || 0
@@ -114,18 +114,18 @@ export default function App() {
   //     return acc
   //   }, [] as string[])?.length || 0
 
-  const totalProvider = new Set(data?.map(item => item?.Header?.ProviderID).filter(Boolean)).size || 0
+  const totalProvider = new Set(data?.map(item => item?.header?.ProviderID).filter(Boolean)).size || 0
 
   const totalAdmission =
     data?.reduce((acc, curr) => {
-      const AdmissionDate = curr?.Header?.CardNo
+      const AdmissionDate = curr?.header?.CardNo
       if (AdmissionDate && !acc.includes(AdmissionDate)) acc.push(AdmissionDate)
       return acc
     }, [] as string[])?.length || 0
 
   const totalDischarge =
     data?.reduce((acc, curr) => {
-      const DischargeDate = curr?.Header?.DischargeDate
+      const DischargeDate = curr?.header?.DischargeDate
       if (DischargeDate && !acc.includes(DischargeDate)) acc.push(DischargeDate)
       return acc
     }, [] as string[])?.length || 0
@@ -143,7 +143,7 @@ export default function App() {
     {
       id: 'C1',
       value: totalPasien.toString(),
-      label: 'Total Patient',
+      label: 'Total Pasien',
       icon: PersonalInjuryOutlined,
       gradientStart: '#11998e', // Hijau Tua
       gradientEnd: '#38ef7d',
@@ -177,7 +177,7 @@ export default function App() {
   const headerData = Object.entries(
     data?.reduce(
       (acc, item) => {
-        const key = item.Header?.ICDXDesc || '-'
+        const key = item.header?.ICDXDesc || '-'
         if (!acc[key]) acc[key] = 0
         acc[key] += 1
         return acc
@@ -682,12 +682,12 @@ export default function App() {
                             children: Tr({
                               children: [
                                 Th({
-                                  children: 'Diagnosis',
+                                  children: 'Diagnosa',
                                   padding: 'theme.spacing.sm',
                                   style: { width: '100%' },
                                 }),
                                 Th({
-                                  children: 'Total Patient',
+                                  children: 'Total Pasien',
                                   padding: 'theme.spacing.sm',
                                   style: { width: 'auto', whiteSpace: 'nowrap' },
                                 }),
@@ -741,7 +741,7 @@ export default function App() {
                           color: 'theme.text.primary',
                           paddingBlock: 'theme.spacing.sm',
                           textAlign: 'center',
-                          children: 'Member List',
+                          children: 'Pasien List',
                         }),
                       ],
                     }),
@@ -813,27 +813,27 @@ export default function App() {
                         children: Tr({
                           children: [
                             Th({
-                              children: 'Member ID',
+                              children: 'NPP',
                               padding: 'theme.spacing.sm',
                             }),
                             Th({
-                              children: 'Member Name',
+                              children: 'Nama Pasien',
                               padding: 'theme.spacing.sm',
                             }),
                             Th({
-                              children: 'Member Status',
+                              children: 'Nama Principle/Dependent',
                               padding: 'theme.spacing.sm',
                             }),
                             Th({
-                              children: 'Provider Name',
+                              children: 'Nama Provider',
                               padding: 'theme.spacing.sm',
                             }),
                             Th({
-                              children: 'Admission Date',
+                              children: 'Tanggal Masuk',
                               padding: 'theme.spacing.sm',
                             }),
                             Th({
-                              children: 'Days',
+                              children: 'Lama Ranap',
                               padding: 'theme.spacing.sm',
                             }),
                           ],
@@ -844,26 +844,26 @@ export default function App() {
                           Tr({
                             key: index,
                             children: [
-                              Td({ children: item.Header.MemberID || '-', textAlign: 'center' }),
+                              Td({ children: item.header.MemberID || '-', textAlign: 'center' }),
 
                               Td({
-                                children: item.Header.MemberName || '-',
+                                children: item.header.MemberName || '-',
                               }),
                               Td({
                                 children:
-                                  item.Header.PD === 'P' ? 'Principal' : item.Header.PD === 'D' ? 'Dependent' : '-',
+                                  item.header.PD === 'P' ? 'Principle' : item.header.PD === 'D' ? 'Dependent' : '-',
                                 textAlign: 'center',
                               }),
                               Td({
-                                children: item.Header.ProviderName || '-',
+                                children: item.header.ProviderName || '-',
                                 textAlign: 'center',
                               }),
                               Td({
-                                children: dayjs(item.Header.AdmissionDate, 'YYYY-MM-DD').format('DD MMMM YYYY') || '-',
+                                children: dayjs(item.header.AdmissionDate, 'YYYY-MM-DD').format('DD MMMM YYYY') || '-',
                                 textAlign: 'center',
                               }),
                               Td({
-                                children: item.Header.Days || '-',
+                                children: item.header.Days || '-',
                                 textAlign: 'center',
                               }),
                             ],

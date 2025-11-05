@@ -1,6 +1,6 @@
 export enum DailyMonitoringField {
-  Header = 'Header',
-  Detail = 'Detail',
+  Header = 'header',
+  Detail = 'detail',
 }
 
 export type DailyMonitoringData = {
