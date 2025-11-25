@@ -420,7 +420,12 @@ export default function App() {
                               gap: 'theme.spacing.md',
                               children: [
                                 Node(cards[0].icon, { fontSize: 'theme.text.5xl' }),
-                                Span(cards[0].label, { flex: 1, fontSize: 'theme.text.3xl', fontWeight: 'bold' }),
+                                Span(cards[0].label, {
+                                  flex: 1,
+                                  fontSize: 'theme.text.3xl',
+                                  lineHeight: 'theme.text.3xl',
+                                  fontWeight: 'bold',
+                                }),
                               ],
                             }),
                             Span(cards[0].value, {
@@ -465,7 +470,12 @@ export default function App() {
                           gap: 'theme.spacing.md',
                           children: [
                             Node(cards[1].icon, { fontSize: 'theme.text.6xl' }),
-                            Span(cards[1].label, { flex: 1, fontSize: 'theme.text.4xl', fontWeight: 'bold' }),
+                            Span(cards[1].label, {
+                              flex: 1,
+                              fontSize: 'theme.text.4xl',
+                              lineHeight: 'theme.text.3xl',
+                              fontWeight: 'bold',
+                            }),
                           ],
                         }),
                         Span(cards[1].value, {
@@ -514,7 +524,12 @@ export default function App() {
                               gap: 'theme.spacing.md',
                               children: [
                                 Node(cards[2].icon, { fontSize: 'theme.text.5xl' }),
-                                Span(cards[2].label, { flex: 1, fontSize: 'theme.text.3xl', fontWeight: 'bold' }),
+                                Span(cards[2].label, {
+                                  flex: 1,
+                                  fontSize: 'theme.text.3xl',
+                                  lineHeight: 'theme.text.3xl',
+                                  fontWeight: 'bold',
+                                }),
                               ],
                             }),
                             Span(cards[2].value, {
@@ -561,6 +576,7 @@ export default function App() {
                                 Span(cards[3].label, {
                                   flex: 1,
                                   fontSize: 'theme.text.3xl',
+                                  lineHeight: 'theme.text.3xl',
                                   fontWeight: 'bold',
                                 }),
                               ],

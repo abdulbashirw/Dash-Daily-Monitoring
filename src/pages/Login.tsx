@@ -1,23 +1,26 @@
-import { Column, Center, Text, Section, Input, Node, useTheme, Div, Span, Img, Form } from '@meonode/ui'
+import { Column, Center, Text, Section, Input, Node, useTheme, Div, Span, Img, Form, Row } from '@meonode/ui'
 import { Button, IconButton } from '@meonode/mui'
 import { buttonTextSX } from '@src/constants/button.const'
 import darkTheme from '@src/constants/themes/darkTheme'
 import lightTheme from '@src/constants/themes/lightTheme'
-import { DarkMode, LightMode } from '@mui/icons-material'
+import { DarkMode, LightMode, Visibility, VisibilityOff } from '@mui/icons-material'
 import { useNavigate } from 'react-router'
 import LogoImage from '@src/assets/image/admedika-logo.png'
+import LogoImageWhite from '@src/assets/image/admedika-logo-white.png'
 import { useLoginMutation } from '@src/redux/service/auth.service.ts'
 import { useForm } from 'react-hook-form'
 import { enqueueSnackbar } from 'notistack'
 import { setToken } from '@src/redux/slice/auth.slice.ts'
 import { useAppDispatch } from '@src/redux/store.ts'
 import tinycolor from 'tinycolor2'
+import { useState } from 'react'
 
 // Main Login Page component
 const LoginPage = () => {
   const { theme, setTheme } = useTheme()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const [showPassword, setShowPassword] = useState(false)
 
   const [login] = useLoginMutation()
 
@@ -43,6 +46,12 @@ const LoginPage = () => {
       })
   })
 
+  const handleTogglePassword = () => {
+    setShowPassword(prev => !prev)
+  }
+
+  const passwordInputType = showPassword ? 'text' : 'password'
+
   return Column({
     minHeight: '100vh',
     overflow: 'hidden',
@@ -63,7 +72,7 @@ const LoginPage = () => {
             children: Column({
               width: '100%',
               maxWidth: 500,
-              backgroundColor: theme => tinycolor(theme.system.base.default).setAlpha(0.6).toString(),
+              backgroundColor: ({ system }) => tinycolor(system.base.default).setAlpha(0.6).toString(),
               backdropFilter: 'blur(10px)',
               borderRadius: 'theme.radius.xl',
               padding: 'theme.spacing.xl',
@@ -82,7 +91,12 @@ const LoginPage = () => {
                 }),
                 // Title
                 Div({
-                  children: Img({ src: LogoImage, alt: 'MeoNode Logo', width: 175, height: 'auto' }),
+                  children: Img({
+                    src: theme.mode === 'light' ? LogoImage : LogoImageWhite,
+                    alt: 'MeoNode Logo',
+                    width: 175,
+                    height: 'auto',
+                  }),
                 }),
 
                 Span('LOGIN', {
@@ -120,19 +134,53 @@ const LoginPage = () => {
                           },
                           ...register('name'),
                         }),
-                        Input({
-                          type: 'password',
-                          placeholder: 'Password',
-                          padding: 'theme.spacing.md',
-                          borderRadius: 'theme.radius.md',
-                          border: 'none',
-                          outline: 'none',
-                          fontSize: 'theme.text.md',
-                          backgroundColor: 'rgba(0,0,0,0.1)',
-                          css: {
-                            '&::placeholder': { color: 'theme.base.content' },
-                          },
-                          ...register('password'),
+                        // Input({
+                        //   type: 'password',
+                        //   placeholder: 'Password',
+                        //   padding: 'theme.spacing.md',
+                        //   borderRadius: 'theme.radius.md',
+                        //   border: 'none',
+                        //   outline: 'none',
+                        //   fontSize: 'theme.text.md',
+                        //   backgroundColor: 'rgba(0,0,0,0.1)',
+                        //   css: {
+                        //     '&::placeholder': { color: 'theme.base.content' },
+                        //   },
+                        //   ...register('password'),
+                        // }),
+                        Row({
+                          position: 'relative',
+                          children: [
+                            Input({
+                              flex: 1,
+                              type: passwordInputType,
+                              placeholder: 'Password',
+                              padding: 'theme.spacing.md',
+                              borderRadius: 'theme.radius.md',
+                              border: 'none',
+                              outline: 'none',
+                              fontSize: 'theme.text.md',
+                              backgroundColor: 'rgba(0,0,0,0.1)',
+                              css: {
+                                '&::placeholder': { color: 'theme.base.content' },
+                                color: 'theme.base.content',
+                                paddingRight: '48px',
+                              },
+                              ...register('password'),
+                            }),
+                            Div({
+                              position: 'absolute',
+                              right: 'theme.spacing.xs',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              children: IconButton({
+                                onClick: handleTogglePassword,
+                                size: 'small',
+                                sx: { color: 'theme.base.content', '&:hover': { color: 'theme.primary.default' } },
+                                children: Node(showPassword ? VisibilityOff : Visibility),
+                              }),
+                            }),
+                          ],
                         }),
                       ],
                     }),
