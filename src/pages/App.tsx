@@ -28,8 +28,8 @@ import {
   Settings,
   Fullscreen,
   LogoutRounded,
-  TrendingUp,
   DynamicForm,
+  GppBadOutlined,
 } from '@mui/icons-material'
 import { buttonTextSX } from '@src/constants/button.const'
 import darkTheme from '@src/constants/themes/darkTheme'
@@ -63,6 +63,72 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload)
 }
 
+
+const RollingDigit = ({ digit, delay }: { digit: string; delay: number }) => {
+  const [target, setTarget] = useState(0)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!isNaN(parseInt(digit))) {
+        setTarget(parseInt(digit))
+      }
+    }, 50)
+    return () => clearTimeout(timer)
+  }, [digit])
+
+  if (isNaN(parseInt(digit))) {
+    return <span style={{ display: 'inline-block' }}>{digit}</span>
+  }
+
+  return (
+    <div
+      style={{
+        display: 'inline-block',
+        height: '1em',
+        overflow: 'hidden',
+        lineHeight: '1',
+        position: 'relative',
+      }}
+    >
+      <div
+        style={{
+          transition: `transform 2s cubic-bezier(0.34, 1.56, 0.64, 1) ${delay}s`,
+          transform: `translateY(-${target * 10}%)`,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+          <span
+            key={num}
+            style={{
+              height: '1em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {num}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const RollingCounter = ({ value }: { value: string | number }) => {
+  const digits = value.toString().split('')
+
+  return (
+    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+      {digits.map((digit, index) => (
+        <RollingDigit key={index} digit={digit} delay={index * 0.1} />
+      ))}
+    </div>
+  )
+}
+
+
 export default function App() {
   const { theme, setTheme } = useTheme()
   const token = useGetToken()
@@ -72,6 +138,39 @@ export default function App() {
 
   const summaryRef = useRef<HTMLDivElement | null>(null)
   const [diagnosticTableHeight, setDiagnosticTableHeight] = useState<number>()
+  const tableContainerRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const scrollInterval = setInterval(() => {
+      if (tableContainerRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = tableContainerRef.current
+        if (scrollTop + clientHeight >= scrollHeight - 1) {
+          tableContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+        } else {
+          tableContainerRef.current.scrollBy({ top: 50, behavior: 'smooth' })
+        }
+      }
+    }, 5000)
+
+    return () => clearInterval(scrollInterval)
+  }, [])
+
+  const patientTableRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const scrollInterval = setInterval(() => {
+      if (patientTableRef.current) {
+        const { scrollTop, scrollHeight, clientHeight } = patientTableRef.current
+        if (scrollTop + clientHeight >= scrollHeight - 1) {
+          patientTableRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+        } else {
+          patientTableRef.current.scrollBy({ top: 50, behavior: 'smooth' })
+        }
+      }
+    }, 8000)
+
+    return () => clearInterval(scrollInterval)
+  }, [])
 
   // States
   const [isMainTableFullscreen, setIsMainTableFullscreen] = useState(false)
@@ -79,7 +178,17 @@ export default function App() {
   const payor = parseJwt(token)
   //const startDate = dayjs().subtract(1, 'w').format('YYYY-MM-DD')
   //const endDate = dayjs().format('YYYY-MM-DD')
-  const datatime = dayjs().format('YYYY-MM-DD HH:mm')
+  //const datatime = dayjs().format('YYYY-MM-DD HH:mm')
+
+  const [currentTime, setCurrentTime] = useState(dayjs())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(dayjs())
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [])
 
   const {
     data: { data } = { data: undefined },
@@ -105,12 +214,21 @@ export default function App() {
   const dataClaimStatus = data?.map(item => item?.header?.ClaimStatus) || []
 
   const totalDHC = dataClaimStatus.filter(item => item === 'DHC').length
+  //const totalGLA = dataClaimStatus.filter(item => item === 'GLA').length
   const totalDMO = dataClaimStatus.filter(item => item === 'DMO').length
 
+  const totalReject = dataClaimStatus.filter(item => item !== 'DMO' && item !== 'DHC').length
+
   // Total provider dengan ClaimStatus = DHC
+  // const totalProviderDHC = new Set(
+  //   data
+  //     ?.filter(item => item?.header?.ClaimStatus === 'DHC') // FIX: sebelumnya DMO
+  //     ?.map(item => item?.header?.ProviderID)
+  //     ?.filter(Boolean),
+  // ).size
+
   const totalProviderDHC = new Set(
     data
-      ?.filter(item => item?.header?.ClaimStatus === 'DHC') // FIX: sebelumnya DMO
       ?.map(item => item?.header?.ProviderID)
       ?.filter(Boolean),
   ).size
@@ -143,8 +261,8 @@ export default function App() {
       label: 'Total Provider',
       value: totalProviderDHC.toString(),
       icon: AssignmentAdd,
-      gradientStart: '#c0392b', // Merah Tua (Deep Red)
-      gradientEnd: '#e74c3c', // Merah Cerah (Bright Red)
+      gradientStart: '#0072ff', // Biru Tua
+      gradientEnd: '#00c6ff', // Biru Muda
     },
     {
       id: 'C3',
@@ -162,6 +280,14 @@ export default function App() {
       gradientStart: '#ff4b1f', // Merah Oranye
       gradientEnd: '#ff9068',
     },
+    {
+      id: 'C5',
+      label: 'Total Rejected',
+      value: totalReject.toString(),
+      icon: GppBadOutlined,
+      gradientStart: '#c0392b', // Merah Tua (Deep Red)
+      gradientEnd: '#e74c3c', // Merah Cerah (Bright Red)
+    },
   ]
 
   const headerData = Object.entries(
@@ -172,7 +298,7 @@ export default function App() {
         acc[key] += 1
         return acc
       },
-      {} as { ICDXDesc: string; total: number },
+      {} as Record<string, number>,
     ) || {},
   )
   const [showLogoutModal, setShowLogoutModal] = useState(false)
@@ -182,20 +308,6 @@ export default function App() {
     dispatch({ type: 'RESET' })
     navigate('/login')
   }
-
-  // const intervalRef = useRef<NodeJS.Timeout | string | number | undefined | null>(null)
-  //
-  // useEffect(() => {
-  //   if (!intervalRef.current) {
-  //     intervalRef.current = setInterval(async () => {
-  //       await refetch()
-  //     }, 10000)
-  //   }
-  //
-  //   return () => {
-  //     clearInterval(intervalRef.current)
-  //   }
-  // }, [])
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -207,7 +319,7 @@ export default function App() {
         } catch (err) {
           console.error('Refetch failed:', err)
         }
-      }, 600000)
+      }, 600000) // 600000 ms = 10 menit
     }
 
     return () => {
@@ -260,13 +372,14 @@ export default function App() {
           padding: 'theme.spacing.lg',
           gap: 'theme.spacing.sm',
           alignItems: 'center',
+          flexWrap: 'wrap',
           children: [
             Span('Daily Monitoring', {
               fontSize: 'theme.text.3xl',
               fontWeight: '800',
               animation: 'breath',
             }),
-            Span('(30 hari terakhir)', {
+            Span('(30 days)', {
               fontSize: 'theme.text.lg',
               fontWeight: '800',
               animation: 'breath',
@@ -366,20 +479,48 @@ export default function App() {
                       flex: 1,
                       gap: 'theme.spacing.md',
                       children: [
+                        // Column({
+                        //   flex: 1,
+                        //   position: 'relative',
+                        //   height: 100,
+                        //   aspectRatio: 4,
+                        //   children: [
+                        //     Img({
+                        //       src: LogoImage,
+                        //       alt: 'MeoNode Logo',
+                        //       objectFit: 'contain',
+                        //       flex: 1,
+                        //       width: '100%',
+                        //     }),
+                        //     Span(`Last Update: ${currentTime.format('DD-MM-YYYY - HH:mm:ss')} WIB`, {
+                        //       fontSize: 'theme.text.md',
+                        //       fontWeight: 'bold',
+                        //       margin: 0,
+                        //     }),
+                        //   ],
+                        // }),
                         Column({
                           flex: 1,
+                          padding: 'theme.spacing.md',
+                          gap: 'theme.spacing.sm',
+                          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s',
                           position: 'relative',
-                          height: 100,
-                          aspectRatio: 4,
+                          overflow: 'hidden',
                           children: [
-                            Img({
-                              src: LogoImage,
-                              alt: 'MeoNode Logo',
-                              objectFit: 'contain',
-                              flex: 1,
-                              width: '100%',
+                            Row({
+                              alignItems: 'center',
+                              gap: 'theme.spacing.md',
+                              children: [
+                                Img({
+                                  src: LogoImage,
+                                  alt: 'MeoNode Logo',
+                                  objectFit: 'contain',
+                                  flex: 1,
+                                  width: '100%',
+                                }),
+                              ],
                             }),
-                            Span(`Last Update: ${datatime}`, {
+                            Span(`Last Update: ${currentTime.format('DD-MM-YYYY | HH:mm:ss')}`, {
                               fontSize: 'theme.text.md',
                               fontWeight: 'bold',
                               margin: 0,
@@ -425,65 +566,69 @@ export default function App() {
                                 }),
                               ],
                             }),
-                            Span(cards[0].value, {
-                              marginInlineStart: 'auto',
-                              marginBlockStart: 'auto',
-                              marginInlineEnd: 'theme.spacing.md',
-                              fontSize: 'theme.text.6xl',
-                              fontWeight: 'bold',
-                            }),
+                            Span(
+                              // cards[0].value,
+                              <RollingCounter value={cards[0].value} />,
+                              {
+                                marginInlineStart: 'auto',
+                                marginBlockStart: 'auto',
+                                marginInlineEnd: 'theme.spacing.md',
+                                fontSize: 'theme.text.5xl',
+                                fontWeight: 'bold',
+                              },
+                            ),
                           ],
                         }),
                       ],
                     }),
-                    Column({
-                      flex: 1,
-                      padding: 'theme.spacing.md',
-                      gap: 'theme.spacing.sm',
-                      borderRadius: 'theme.radius.lg',
-                      background: `linear-gradient(135deg, ${cards[1].gradientStart} 0%, ${cards[1].gradientEnd} 100%)`,
-                      color: 'white',
-                      boxShadow: 'theme.shadow.md',
-                      transition: 'transform 0.2s ease-in-out, box-shadow 0.2s',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      css: {
-                        '&:hover': {
-                          transform: 'translateY(-5%)',
-                          boxShadow: 'theme.shadow.lg',
-                        },
-                      },
-                      children: [
-                        Node(cards[1].icon, {
-                          fontSize: '15vw',
-                          position: 'absolute',
-                          zIndex: 0,
-                          bottom: '-20%',
-                          left: '-10%',
-                          opacity: 0.3,
-                        }),
-                        Row({
-                          alignItems: 'center',
-                          gap: 'theme.spacing.md',
-                          children: [
-                            Node(cards[1].icon, { fontSize: 'theme.text.6xl' }),
-                            Span(cards[1].label, {
-                              flex: 1,
-                              fontSize: 'theme.text.3xl',
-                              lineHeight: 'theme.text.3xl',
-                              fontWeight: 'bold',
-                            }),
-                          ],
-                        }),
-                        Span(cards[1].value, {
-                          marginInlineStart: 'auto',
-                          marginBlockStart: 'auto',
-                          marginInlineEnd: 'theme.spacing.md',
-                          fontSize: 'theme.text.6xl',
-                          fontWeight: 'bold',
-                        }),
-                      ],
-                    }),
+                    // Column({
+                    //   flex: 1,
+                    //   padding: 'theme.spacing.md',
+                    //   gap: 'theme.spacing.sm',
+                    //   borderRadius: 'theme.radius.lg',
+                    //   background: `linear-gradient(135deg, ${cards[1].gradientStart} 0%, ${cards[1].gradientEnd} 100%)`,
+                    //   color: 'white',
+                    //   boxShadow: 'theme.shadow.md',
+                    //   transition: 'transform 0.2s ease-in-out, box-shadow 0.2s',
+                    //   position: 'relative',
+                    //   overflow: 'hidden',
+                    //   css: {
+                    //     '&:hover': {
+                    //       transform: 'translateY(-5%)',
+                    //       boxShadow: 'theme.shadow.lg',
+                    //     },
+                    //   },
+                    //   children: [
+                    //     Node(cards[1].icon, {
+                    //       fontSize: '15vw',
+                    //       position: 'absolute',
+                    //       zIndex: 0,
+                    //       bottom: '-20%',
+                    //       left: '-10%',
+                    //       opacity: 0.3,
+                    //     }),
+                    //     Row({
+                    //       alignItems: 'center',
+                    //       gap: 'theme.spacing.md',
+                    //       children: [
+                    //         Node(cards[1].icon, { fontSize: 'theme.text.6xl' }),
+                    //         Span(cards[1].label, {
+                    //           flex: 1,
+                    //           fontSize: 'theme.text.2xl',
+                    //           lineHeight: 'theme.text.2xl',
+                    //           fontWeight: 'bold',
+                    //         }),
+                    //       ],
+                    //     }),
+                    //     Span(cards[1].value, {
+                    //       marginInlineStart: 'auto',
+                    //       marginBlockStart: 'auto',
+                    //       marginInlineEnd: 'theme.spacing.md',
+                    //       fontSize: 'theme.text.5xl',
+                    //       fontWeight: 'bold',
+                    //     }),
+                    //   ],
+                    // }),
                     Column({
                       flex: 1,
                       flexShrink: 0,
@@ -529,13 +674,16 @@ export default function App() {
                                 }),
                               ],
                             }),
-                            Span(cards[2].value, {
-                              marginInlineStart: 'auto',
-                              marginBlockStart: 'auto',
-                              marginInlineEnd: 'theme.spacing.md',
-                              fontSize: 'theme.text.6xl',
-                              fontWeight: 'bold',
-                            }),
+                            Span(
+                              <RollingCounter value={cards[2].value} />,
+                              {
+                                marginInlineStart: 'auto',
+                                marginBlockStart: 'auto',
+                                marginInlineEnd: 'theme.spacing.md',
+                                fontSize: 'theme.text.5xl',
+                                fontWeight: 'bold',
+                              },
+                            ),
                           ],
                         }),
                         Column({
@@ -578,13 +726,127 @@ export default function App() {
                                 }),
                               ],
                             }),
-                            Span(cards[3].value, {
-                              marginInlineStart: 'auto',
-                              marginBlockStart: 'auto',
-                              marginInlineEnd: 'theme.spacing.md',
-                              fontSize: 'theme.text.6xl',
-                              fontWeight: 'bold',
+                            Span(
+                              <RollingCounter value={cards[3].value} />,
+                              {
+                                marginInlineStart: 'auto',
+                                marginBlockStart: 'auto',
+                                marginInlineEnd: 'theme.spacing.md',
+                                fontSize: 'theme.text.5xl',
+                                fontWeight: 'bold',
+                              },
+                            ),
+                          ],
+                        }),
+                      ],
+                    }),
+                    Column({
+                      flex: 1,
+                      flexShrink: 0,
+                      gap: 'theme.spacing.md',
+                      children: [
+                        Column({
+                          flex: 1,
+                          flexShrink: 0,
+                          padding: 'theme.spacing.md',
+                          gap: 'theme.spacing.sm',
+                          borderRadius: 'theme.radius.lg',
+                          background: `linear-gradient(135deg, ${cards[1].gradientStart} 0%, ${cards[1].gradientEnd} 100%)`,
+                          color: 'white',
+                          boxShadow: 'theme.shadow.md',
+                          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          css: {
+                            '&:hover': {
+                              transform: 'translateY(-5%)',
+                              boxShadow: 'theme.shadow.lg',
+                            },
+                          },
+                          children: [
+                            Node(cards[1].icon, {
+                              fontSize: '8vw',
+                              position: 'absolute',
+                              zIndex: 0,
+                              bottom: '-20%',
+                              left: '-8%',
+                              opacity: 0.3,
                             }),
+                            Row({
+                              alignItems: 'center',
+                              gap: 'theme.spacing.md',
+                              children: [
+                                Node(cards[1].icon, { fontSize: 'theme.text.5xl' }),
+                                Span(cards[1].label, {
+                                  flex: 1,
+                                  fontSize: 'theme.text.2xl',
+                                  lineHeight: 'theme.text.2xl',
+                                  fontWeight: 'bold',
+                                }),
+                              ],
+                            }),
+                            Span(
+                              <RollingCounter value={cards[1].value} />,
+                              {
+                                marginInlineStart: 'auto',
+                                marginBlockStart: 'auto',
+                                marginInlineEnd: 'theme.spacing.md',
+                                fontSize: 'theme.text.5xl',
+                                fontWeight: 'bold',
+                              },
+                            ),
+                          ],
+                        }),
+                        Column({
+                          flex: 1,
+                          flexShrink: 0,
+                          padding: 'theme.spacing.md',
+                          gap: 'theme.spacing.sm',
+                          borderRadius: 'theme.radius.lg',
+                          background: `linear-gradient(135deg, ${cards[4  ].gradientStart} 0%, ${cards[4].gradientEnd} 100%)`,
+                          color: 'white',
+                          boxShadow: 'theme.shadow.md',
+                          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          css: {
+                            '&:hover': {
+                              transform: 'translateY(-5%)',
+                              boxShadow: 'theme.shadow.lg',
+                            },
+                          },
+                          children: [
+                            Node(cards[4].icon, {
+                              fontSize: '8vw',
+                              position: 'absolute',
+                              zIndex: 0,
+                              bottom: '-20%',
+                              left: '-8%',
+                              opacity: 0.3,
+                            }),
+                            Row({
+                              alignItems: 'center',
+                              gap: 'theme.spacing.md',
+                              children: [
+                                Node(cards[4].icon, { fontSize: 'theme.text.5xl' }),
+                                Span(cards[4].label, {
+                                  flex: 1,
+                                  fontSize: 'theme.text.2xl',
+                                  lineHeight: 'theme.text.2xl',
+                                  fontWeight: 'bold',
+                                }),
+                              ],
+                            }),
+                            Span(
+                              <RollingCounter value={cards[4].value} />,
+                              {
+                                marginInlineStart: 'auto',
+                                marginBlockStart: 'auto',
+                                marginInlineEnd: 'theme.spacing.md',
+                                fontSize: 'theme.text.5xl',
+                                fontWeight: 'bold',
+                              },
+                            ),
                           ],
                         }),
                       ],
@@ -606,7 +868,7 @@ export default function App() {
                       placeItems: 'center',
                       gap: 'theme.spacing.sm',
                       children: [
-                        Node(TrendingUp, { color: 'theme.primary' }),
+                        // Node(TrendingUp, { color: 'theme.primary' }),
                         Typography({
                           fontSize: 'theme.text.2xl',
                           fontWeight: 'bold',
@@ -618,6 +880,7 @@ export default function App() {
                       ],
                     }),
                     Div({
+                      ref: tableContainerRef,
                       flex: 1,
                       display: 'flex',
                       flexDirection: 'column',
@@ -637,7 +900,7 @@ export default function App() {
                             borderLeft: '1px solid rgba(0,0,0,0.05)',
                             borderRight: '1px solid rgba(0,0,0,0.05)',
                             padding: 'theme.spacing.sm',
-                            fontSize: 15,
+                            fontSize: 14,
                             color: 'theme.text.secondary',
                             transition: 'all 0.25s ease-in-out',
                           },
@@ -691,7 +954,7 @@ export default function App() {
                         children: [
                           Thead({
                             fontWeight: 'bold',
-                            fontSize: 18,
+                            fontSize: 16,
                             children: Tr({
                               children: [
                                 Th({
@@ -708,19 +971,27 @@ export default function App() {
                             }),
                           }),
                           Tbody({
-                            children: headerData.map(([ICDXDesc, total]) =>
-                              Tr({
-                                children: [
-                                  Td({ children: ICDXDesc }),
-                                  Td({
-                                    children: total.toString(),
-                                    fontWeight: 'bold',
-                                    backgroundColor: 'theme.neutral.hover',
-                                    textAlign: 'center',
-                                  }),
-                                ],
-                              }),
-                            ),
+                            children: headerData
+                              // 1. Filter ICDX kosong atau '-'
+                              .filter(([ICDXDesc]) => ICDXDesc && ICDXDesc.trim() !== '' && ICDXDesc !== '-')
+
+                              // 2. Urutkan berdasarkan total dari terbesar ke terkecil
+                              .sort((a, b) => b[1] - a[1])
+
+                              // 3. Render tabel
+                              .map(([ICDXDesc, total]) =>
+                                Tr({
+                                  children: [
+                                    Td({ children: ICDXDesc }),
+                                    Td({
+                                      children: total.toString(),
+                                      fontWeight: 'bold',
+                                      backgroundColor: 'theme.neutral.hover',
+                                      textAlign: 'center',
+                                    }),
+                                  ],
+                                }),
+                              ),
                           }),
                         ],
                       }),
@@ -770,6 +1041,7 @@ export default function App() {
                   ],
                 }),
                 Column({
+                  ref: patientTableRef,
                   flex: 1,
                   gap: 'theme.spacing.sm',
                   overflow: 'auto',
@@ -834,7 +1106,7 @@ export default function App() {
                     children: [
                       Thead({
                         fontWeight: 'bold',
-                        fontSize: 18,
+                        fontSize: 14,
                         children: Tr({
                           children: [
                             Th({
@@ -846,7 +1118,7 @@ export default function App() {
                               padding: 'theme.spacing.sm',
                             }),
                             Th({
-                              children: 'Nama Principle/Dependent',
+                              children: 'Principle/Dependent',
                               padding: 'theme.spacing.sm',
                             }),
                             Th({
@@ -865,9 +1137,11 @@ export default function App() {
                         }),
                       }),
                       Tbody({
-                        //children: data?.map((item, index) =>
+                        // children: data
+                        //?.map((item, index) =>
                         children: data
                           ?.slice()
+                          ?.filter(item => item?.header?.ClaimStatus === 'DMO')
                           ?.sort((a, b) => {
                             const daysA = Number(a?.header?.Days) || 0
                             const daysB = Number(b?.header?.Days) || 0
