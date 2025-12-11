@@ -20,7 +20,7 @@ export type DailyMonitoringData = {
     ProviderName: string
     AdmissionDate: string
     DischargeDate: string
-    Days: string
+    Days: number
     ICDX: string
     ICDXDesc: string
     CoverageID: string

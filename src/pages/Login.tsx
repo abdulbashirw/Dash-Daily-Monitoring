@@ -1,4 +1,4 @@
-import { Column, Center, Text, Section, Input, Node, useTheme, Div, Span, Img, Form, Row } from '@meonode/ui'
+import { Column, Center, Section, Input, Node, useTheme, Div, Span, Img, Form, Row } from '@meonode/ui'
 import { Button, IconButton } from '@meonode/mui'
 import darkTheme from '@src/constants/themes/darkTheme'
 import lightTheme from '@src/constants/themes/lightTheme'
@@ -299,20 +299,6 @@ const LoginPage = () => {
                       type: 'submit',
                     }),
                   ],
-                }),
-
-                // Optional: link to register or forgot password
-                Text('Forgot password?', {
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  marginTop: '8px',
-                  opacity: '0.6',
-                  cursor: 'pointer',
-                  color: 'theme.base.content',
-                  transition: 'opacity 0.2s',
-                  css: {
-                    '&:hover': { opacity: 1, textDecoration: 'none', color: 'theme.primary.default' },
-                  },
                 }),
               ],
             }),

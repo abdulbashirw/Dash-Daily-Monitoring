@@ -208,24 +208,15 @@ export default function App() {
     { skip: !token },
   )
 
-  //console.log(data)
 
   // Claim Status
   const dataClaimStatus = data?.map(item => item?.header?.ClaimStatus) || []
 
-  const totalDHC = dataClaimStatus.filter(item => item === 'DHC').length
-  //const totalGLA = dataClaimStatus.filter(item => item === 'GLA').length
-  const totalDMO = dataClaimStatus.filter(item => item === 'DMO').length
+  const totalDHC = dataClaimStatus.filter(item => item === 'DHC').length // Total Pasien Discharge
+ 
+  const totalDMO = dataClaimStatus.filter(item => item === 'DMO').length // Total Pasien Monitoring
 
-  const totalReject = dataClaimStatus.filter(item => item !== 'DMO' && item !== 'DHC').length
-
-  // Total provider dengan ClaimStatus = DHC
-  // const totalProviderDHC = new Set(
-  //   data
-  //     ?.filter(item => item?.header?.ClaimStatus === 'DHC') // FIX: sebelumnya DMO
-  //     ?.map(item => item?.header?.ProviderID)
-  //     ?.filter(Boolean),
-  // ).size
+  const totalReject = dataClaimStatus.filter(item => item !== 'DMO' && item !== 'DHC').length // Total Pasien Reject
 
   const totalProviderDHC = new Set(
     data
@@ -236,7 +227,7 @@ export default function App() {
   // Admission
   const dataAdmission = data?.map(item => item?.header?.AdmissionDate) || []
 
-  const totalAdmissionValid = dataAdmission.filter(Boolean).length || 0
+  const totalAdmissionValid = dataAdmission.filter(Boolean).length || 0 // Total Pasien Admission
 
   const cards: {
     id: string
@@ -479,26 +470,6 @@ export default function App() {
                       flex: 1,
                       gap: 'theme.spacing.md',
                       children: [
-                        // Column({
-                        //   flex: 1,
-                        //   position: 'relative',
-                        //   height: 100,
-                        //   aspectRatio: 4,
-                        //   children: [
-                        //     Img({
-                        //       src: LogoImage,
-                        //       alt: 'MeoNode Logo',
-                        //       objectFit: 'contain',
-                        //       flex: 1,
-                        //       width: '100%',
-                        //     }),
-                        //     Span(`Last Update: ${currentTime.format('DD-MM-YYYY - HH:mm:ss')} WIB`, {
-                        //       fontSize: 'theme.text.md',
-                        //       fontWeight: 'bold',
-                        //       margin: 0,
-                        //     }),
-                        //   ],
-                        // }),
                         Column({
                           flex: 1,
                           padding: 'theme.spacing.md',
@@ -581,54 +552,6 @@ export default function App() {
                         }),
                       ],
                     }),
-                    // Column({
-                    //   flex: 1,
-                    //   padding: 'theme.spacing.md',
-                    //   gap: 'theme.spacing.sm',
-                    //   borderRadius: 'theme.radius.lg',
-                    //   background: `linear-gradient(135deg, ${cards[1].gradientStart} 0%, ${cards[1].gradientEnd} 100%)`,
-                    //   color: 'white',
-                    //   boxShadow: 'theme.shadow.md',
-                    //   transition: 'transform 0.2s ease-in-out, box-shadow 0.2s',
-                    //   position: 'relative',
-                    //   overflow: 'hidden',
-                    //   css: {
-                    //     '&:hover': {
-                    //       transform: 'translateY(-5%)',
-                    //       boxShadow: 'theme.shadow.lg',
-                    //     },
-                    //   },
-                    //   children: [
-                    //     Node(cards[1].icon, {
-                    //       fontSize: '15vw',
-                    //       position: 'absolute',
-                    //       zIndex: 0,
-                    //       bottom: '-20%',
-                    //       left: '-10%',
-                    //       opacity: 0.3,
-                    //     }),
-                    //     Row({
-                    //       alignItems: 'center',
-                    //       gap: 'theme.spacing.md',
-                    //       children: [
-                    //         Node(cards[1].icon, { fontSize: 'theme.text.6xl' }),
-                    //         Span(cards[1].label, {
-                    //           flex: 1,
-                    //           fontSize: 'theme.text.2xl',
-                    //           lineHeight: 'theme.text.2xl',
-                    //           fontWeight: 'bold',
-                    //         }),
-                    //       ],
-                    //     }),
-                    //     Span(cards[1].value, {
-                    //       marginInlineStart: 'auto',
-                    //       marginBlockStart: 'auto',
-                    //       marginInlineEnd: 'theme.spacing.md',
-                    //       fontSize: 'theme.text.5xl',
-                    //       fontWeight: 'bold',
-                    //     }),
-                    //   ],
-                    // }),
                     Column({
                       flex: 1,
                       flexShrink: 0,
@@ -868,7 +791,6 @@ export default function App() {
                       placeItems: 'center',
                       gap: 'theme.spacing.sm',
                       children: [
-                        // Node(TrendingUp, { color: 'theme.primary' }),
                         Typography({
                           fontSize: 'theme.text.2xl',
                           fontWeight: 'bold',
@@ -934,20 +856,16 @@ export default function App() {
                                 left: 0,
                                 right: 0,
                                 bottom: 0,
-                                // backgroundColor: 'theme.primary',
                                 zIndex: -1,
                               },
                             },
                             '& th:first-child': {
                               borderTopLeftRadius: 'theme.radius.md',
                               boxShadow: 'inset 2px 0 0 rgba(255,255,255,0.1)', // sedikit cahaya di sisi kiri
-                              // background: 'linear-gradient(135deg, theme.primary, theme.primary.hover)', // gradasi halus ke pojok kiri
                             },
-
                             '& th:last-child': {
                               borderTopRightRadius: 'theme.radius.md',
                               boxShadow: 'inset -2px 0 0 rgba(255,255,255,0.1)', // cahaya halus di sisi kanan
-                              // background: 'linear-gradient(225deg, theme.primary, theme.primary.hover)', // gradasi searah ke kanan
                             },
                           },
                         },
@@ -1137,14 +1055,12 @@ export default function App() {
                         }),
                       }),
                       Tbody({
-                        // children: data
-                        //?.map((item, index) =>
                         children: data
                           ?.slice()
                           ?.filter(item => item?.header?.ClaimStatus === 'DMO')
                           ?.sort((a, b) => {
-                            const daysA = Number(a?.header?.Days) || 0
-                            const daysB = Number(b?.header?.Days) || 0
+                            const daysA = a.header.Days || 0
+                            const daysB = b.header.Days || 0
                             return daysB - daysA
                           })
                           ?.map((item, index) =>
