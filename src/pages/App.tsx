@@ -191,7 +191,8 @@ export default function App() {
   }, [])
 
   const {
-    data: { data } = { data: undefined },
+    data: responseData,
+    //data: { data } = { data: undefined },
     refetch,
     isError,
     isSuccess,
@@ -207,6 +208,8 @@ export default function App() {
     },
     { skip: !token },
   )
+
+  const data = Array.isArray(responseData?.data) ? responseData?.data : []
 
 
   // Claim Status
